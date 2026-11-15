@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Route IA Guinée · Maquette testable</title>
+<style>
+:root{--bg:#F3F7F4;--card:#FFFFFF;--ink:#1B2A22;--muted:#55665C;--title:#12432F;--brand:#1F6B45;--accent:#D9731A;--accent-bg:#FFF1E0;--line:#D5E0D9;--sea:#DCE9F2;--land:#E6F1E9;--hdr:#12432F;--hdr-ink:#FFFFFF;--chip:#E8F3EC;
+--ok:#2E9B57;--slight:#E5A913;--grave:#D93B2B;--risk:#7A2E8E;--works:#2B6CB0;--bubble-user:#12432F;--bubble-user-ink:#fff;--bubble-bot:#E8F3EC;--shadow:0 1px 4px rgba(0,0,0,.14);color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1913;--card:#15241C;--ink:#E6F0EA;--muted:#A8BBB0;--title:#BFE3CD;--brand:#5FC18A;--accent:#F5A34F;--accent-bg:#3A2A14;--line:#2A3D32;--sea:#11222E;--land:#1C3226;--hdr:#0A261A;--chip:#1E3328;--ok:#3DBB6A;--slight:#F5C242;--grave:#F0675A;--risk:#C27BDB;--works:#6AA6E8;--bubble-user:#2B7A52;--bubble-bot:#1E3328;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0D1913;--card:#15241C;--ink:#E6F0EA;--muted:#A8BBB0;--title:#BFE3CD;--brand:#5FC18A;--accent:#F5A34F;--accent-bg:#3A2A14;--line:#2A3D32;--sea:#11222E;--land:#1C3226;--hdr:#0A261A;--chip:#1E3328;--ok:#3DBB6A;--slight:#F5C242;--grave:#F0675A;--risk:#C27BDB;--works:#6AA6E8;--bubble-user:#2B7A52;--bubble-bot:#1E3328;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.45;padding-bottom:76px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--hdr)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--hdr);color:var(--hdr-ink);display:flex;align-items:center;gap:10px;padding:10px 14px}
+.logo{width:34px;height:34px;border-radius:10px;background:#F28C28;display:grid;place-items:center;font-size:18px;flex:none}
+.top h1{font-size:17px;line-height:1.1;margin:0;font-weight:700}
+.top small{display:block;font-size:12px;opacity:.85;font-weight:400}
+@media (max-width:520px){.top{gap:8px;padding:8px 10px}.top small{display:none}.logo{width:30px;height:30px;font-size:16px}.top h1{font-size:16px;white-space:nowrap}.badge{font-size:11px;padding:3px 8px}.btn-h{padding:6px 9px;font-size:13px;white-space:nowrap}}
+.top .sp{flex:1}
+.badge{font-size:12px;font-weight:700;background:#F28C28;color:#fff;border-radius:99px;padding:3px 10px;white-space:nowrap}
+.btn-h{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:10px;padding:6px 10px;font-size:14px}
+#net{font-size:12px;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.18);display:none}
+#net.off{display:inline-block;background:#D93B2B}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--card);border-top:1px solid var(--line);display:flex;padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px))}
+nav.tabs button{flex:1;background:none;border:0;border-radius:12px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12.5px;color:var(--muted);min-height:54px}
+nav.tabs button .ic{font-size:21px;line-height:1}
+nav.tabs button[aria-current="page"]{color:var(--title);background:var(--chip);font-weight:700}
+main{max-width:1100px;margin:0 auto;padding:12px 14px 20px}
+.view{display:none}.view.on{display:block}
+h2{font-size:20px;margin:6px 0 8px;color:var(--title)}
+h3{font-size:16px;margin:0 0 6px;color:var(--title)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow);margin-bottom:12px}
+.muted{color:var(--muted)}.small{font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:7px;min-height:38px}
+.chip[aria-pressed="false"]{opacity:.5}
+.chip.act{background:var(--chip);border-color:var(--brand)}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;display:inline-block}
+.dot.ok{background:var(--ok)}.dot.slight{background:var(--slight)}.dot.grave{background:var(--grave)}.dot.risk{background:var(--risk)}.dot.works{background:var(--works)}
+.seg-ctl{display:inline-flex;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:8px}
+.seg-ctl button{background:var(--card);border:0;padding:7px 14px;font-size:14px}
+.seg-ctl button[aria-pressed="true"]{background:var(--brand);color:#fff;font-weight:700}
+.mapwrap{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--sea)}
+#map{display:block;width:100%;height:auto;max-height:62vh;touch-action:manipulation}
+.grid2{display:grid;gap:12px}
+@media (min-width:900px){.grid2{grid-template-columns:1.35fr 1fr}body{padding-bottom:0}nav.tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 54px);bottom:auto;border-top:0;border-bottom:1px solid var(--line);justify-content:center;padding:4px 6px}nav.tabs button{flex:none;flex-direction:row;gap:8px;padding:8px 18px;min-height:0;font-size:15px}html{scroll-padding-top:130px}}
+.pill{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:3px 11px;font-weight:700;font-size:14px;border:1.5px solid currentColor}
+.pill.ok{color:var(--ok)}.pill.slight{color:var(--slight)}.pill.grave{color:var(--grave)}.pill.risk{color:var(--risk)}.pill.works{color:var(--works)}
+.pill .dot{background:currentColor}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0;font-size:14.5px}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.reco{background:var(--accent-bg);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:15px}
+ul.plain{margin:6px 0;padding-left:20px}
+.seglist{display:grid;gap:8px}
+.segrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;text-align:left;width:100%;min-height:50px}
+.segrow[aria-pressed="true"]{border-color:var(--brand);background:var(--chip)}
+.segrow .t{font-weight:700;min-width:30px}
+.segrow .n{flex:1;font-size:14.5px}
+.segrow .n small{display:block;color:var(--muted);font-size:12.5px}
+/* chat */
+.chat{display:flex;flex-direction:column;height:calc(100dvh - 330px);min-height:320px}
+@media (min-width:900px){.chat{height:560px}}
+#msgs{flex:1;overflow:auto;padding:4px 2px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%;padding:10px 13px;border-radius:16px;font-size:15.5px;line-height:1.42;word-wrap:break-word}
+.msg.u{align-self:flex-end;background:var(--bubble-user);color:var(--bubble-user-ink);border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--bubble-bot);border-bottom-left-radius:4px}
+.msg .src{display:block;margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--muted)}
+.msg ul{margin:6px 0 0;padding-left:18px}
+.typing{display:inline-flex;gap:4px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.askbar{display:flex;gap:8px;margin-top:8px}
+.askbar input{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--card);color:var(--ink);font-size:16px;min-width:0}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:12px;padding:11px 16px;font-weight:700;min-height:44px}
+.btn.sec{background:var(--chip);color:var(--title);border:1.5px solid var(--line)}
+.btn.warn{background:var(--accent);color:#fff}
+/* forms */
+label{display:block;font-weight:600;font-size:14.5px;margin:12px 0 5px}
+select,textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card);color:var(--ink);font-size:16px;font-family:inherit}
+textarea{min-height:84px;resize:vertical}
+.radios{display:flex;gap:8px;flex-wrap:wrap}
+.radios label{margin:0;font-weight:500;border:1.5px solid var(--line);border-radius:12px;padding:9px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;min-height:44px}
+.radios input{accent-color:var(--brand)}
+.thumb{max-width:160px;max-height:120px;border-radius:10px;margin-top:8px;display:none}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--title);color:var(--bg);padding:11px 16px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:60;max-width:92vw;display:none;font-size:15px}
+.rep{border-top:1px solid var(--line);padding:9px 0;font-size:14.5px}.rep:first-child{border-top:0}
+/* dashboard */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+@media (min-width:700px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+.kpi b{display:block;font-size:28px;line-height:1.1;color:var(--title)}.kpi span{font-size:13.5px;color:var(--muted)}
+.bar{display:grid;grid-template-columns:130px 1fr 54px;gap:8px;align-items:center;margin:7px 0;font-size:14px}
+.bar .tr{height:16px;background:var(--chip);border-radius:8px;overflow:hidden}.bar .fl{height:100%;border-radius:8px}
+.rain{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:8px}
+.rain div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:12px;gap:3px}
+.rain i{display:block;width:100%;border-radius:6px 6px 0 0;background:var(--works)}
+.prio{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}.prio:first-of-type{border-top:0}
+.score{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;font-size:17px}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:none;align-items:flex-end;justify-content:center;padding-top:env(safe-area-inset-top,0px)}
+.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:640px;max-height:92dvh;overflow:auto;border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.modal{align-items:center}.sheet{border-radius:20px}}
+.stars{display:flex;gap:6px}.stars button{font-size:30px;background:none;border:0;padding:2px 4px;color:var(--line);line-height:1}.stars button.on{color:var(--slight)}
+ol.tasks{padding-left:20px;margin:6px 0}ol.tasks li{margin:5px 0}
+.hint{font-size:13px;color:var(--muted)}
+</style></head>
+<body>
+<header class="top">
+  <div class="logo" aria-hidden="true">🛣️</div>
+  <div><h1>Route IA Guinée</h1><small>Maquette testable · RN1 Conakry – Mamou</small></div>
+  <div class="sp"></div>
+  <span id="net">Hors ligne</span>
+  <span class="badge">Données fictives</span>
+  <button class="btn-h" id="open-test" aria-haspopup="dialog">Test</button>
+</header>
+
+<main>
+<section id="v-carte" class="view on" aria-label="Carte des routes">
+  <h2>État des routes</h2>
+  <p class="muted small" style="margin:0 0 8px">Touchez un tronçon sur la carte ou dans la liste. Les couleurs et les étiquettes indiquent l’état.</p>
+  <div class="chips" id="filters" role="group" aria-label="Filtrer par état"></div>
+  <div class="seg-ctl" role="group" aria-label="Zoom de la carte"><button id="z-axe" aria-pressed="true">Axe RN1</button><button id="z-gn" aria-pressed="false">Toute la Guinée</button></div>
+  <div class="grid2">
+    <div>
+      <div class="mapwrap"><svg id="map" role="img" aria-label="Carte de la RN1 divisée en 8 tronçons colorés selon leur état"></svg></div>
+      <div class="card" style="margin-top:12px"><h3>Les 8 tronçons</h3><div class="seglist" id="seglist"></div></div>
+    </div>
+    <div><div class="card" id="detail" aria-live="polite"></div></div>
+  </div>
+</section>
+
+<section id="v-agent" class="view" aria-label="Agent IA">
+  <h2>Agent IA</h2>
+  <div class="grid2">
+    <div class="card">
+      <div class="chat"><div id="msgs" aria-live="polite"></div></div>
+      <div class="chips" id="quick"></div>
+      <form class="askbar" id="askform" autocomplete="off"><input id="ask" type="text" placeholder="Posez votre question sur la RN1…" aria-label="Votre question"><button class="btn" type="submit">Envoyer</button></form>
+    </div>
+    <div class="card"><h3>Comment répond l’agent ?</h3>
+      <ul class="plain small">
+        <li>Il répond <b>uniquement à partir de la base</b> (ici, des données fictives), jamais de sa mémoire.</li>
+        <li>Chaque réponse affiche la <b>date de mise à jour</b> et un <b>niveau de confiance</b>.</li>
+        <li>Si l’information manque, il le dit : essayez une question hors sujet.</li>
+        <li>La décision finale reste humaine : il faut vérifier sur place.</li>
+      </ul>
+      <p class="hint">Dans la vraie version, un modèle de langage appellera des outils (requêtes sur la base géospatiale). Ici, un moteur de règles simule ce comportement.</p>
+    </div>
+  </div>
+</section>
+
+<section id="v-signaler" class="view" aria-label="Signaler un problème">
+  <h2>Signaler un problème</h2>
+  <div class="grid2">
+    <div class="card">
+      <div><label for="r-type">Type de problème</label>
+        <select id="r-type"><option>Nid-de-poule</option><option>Ravinement ou érosion</option><option>Inondation de chaussée</option><option>Chantier non signalé</option><option>Accident ou obstacle</option><option>Autre</option></select></div>
+      <div><label for="r-seg">Tronçon concerné</label><select id="r-seg"></select></div>
+      <div><label>Gravité</label>
+        <div class="radios" role="radiogroup" aria-label="Gravité">
+          <label><input type="radio" name="grav" value="Légère" checked> Légère</label>
+          <label><input type="radio" name="grav" value="Importante"> Importante</label>
+          <label><input type="radio" name="grav" value="Dangereuse"> Dangereuse</label></div></div>
+      <div><label for="r-photo">Photo (facultatif)</label><input id="r-photo" type="file" accept="image/*" capture="environment"><img id="thumb" class="thumb" alt="Aperçu de la photo choisie"></div>
+      <div><label for="r-desc">Description (facultatif)</label><textarea id="r-desc" placeholder="Ex. : trou profond au milieu de la voie"></textarea></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn sec" id="r-gps" type="button">📍 Utiliser ma position</button><button class="btn" id="r-send" type="button">Envoyer le signalement</button></div>
+      <p class="hint" id="r-gpsout" style="margin:8px 0 0"></p>
+      <p class="hint">Hors ligne, le signalement serait gardé sur l’appareil puis envoyé dès que le réseau revient (simulation).</p>
+    </div>
+    <div class="card"><h3>Signalements récents</h3><div id="replist"></div></div>
+  </div>
+</section>
+
+<section id="v-tableau" class="view" aria-label="Tableau de bord">
+  <h2>Tableau de bord décideur</h2>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid2">
+    <div class="card"><h3>Kilomètres par état</h3><div id="bars"></div></div>
+    <div class="card"><h3>Pluie annoncée (7 jours)</h3><div class="rain" id="rain" role="img" aria-label="Prévision de pluie sur 7 jours"></div><p class="hint" id="rainnote"></p></div>
+  </div>
+  <div class="card"><h3>À traiter en priorité</h3><p class="hint" style="margin-top:0">Score fictif = 60 % risque d’accident + 40 % gravité de la dégradation.</p><div id="prio"></div></div>
+</section>
+</main>
+
+<nav class="tabs" aria-label="Navigation principale">
+  <button data-tab="carte" aria-current="page"><span class="ic" aria-hidden="true">🗺️</span>Carte</button>
+  <button data-tab="agent"><span class="ic" aria-hidden="true">💬</span>Agent IA</button>
+  <button data-tab="signaler"><span class="ic" aria-hidden="true">📸</span>Signaler</button>
+  <button data-tab="tableau"><span class="ic" aria-hidden="true">📊</span>Tableau</button>
+</nav>
+
+<div class="toast" id="toast" role="status"></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="mt" style="margin:0">Guide de test</h2><button class="btn sec" id="close-test">Fermer</button></div>
+    <p class="muted small">Essayez ces 6 tâches, puis donnez votre avis. Toutes les données sont fictives.</p>
+    <ol class="tasks">
+      <li>Sur la carte, trouvez le tronçon <b>gravement dégradé</b> et lisez la recommandation.</li>
+      <li>Filtrez la carte pour n’afficher que les <b>chantiers</b>.</li>
+      <li>Demandez à l’agent : « État de la RN1 entre Kindia et Mamou ».</li>
+      <li>Posez une question <b>hors sujet</b> à l’agent et observez sa réaction.</li>
+      <li>Faites un <b>signalement</b> (par exemple un nid-de-poule sur T5).</li>
+      <li>Dans le tableau de bord, repérez le <b>tronçon prioritaire</b>.</li>
+    </ol>
+    <h3 style="margin-top:14px">Votre avis</h3>
+    <div class="stars" id="stars" role="radiogroup" aria-label="Note sur 5"></div>
+    <label for="fb-text">Qu’est-ce qui était confus ou manquant ?</label>
+    <textarea id="fb-text" placeholder="Votre commentaire"></textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="fb-copy">Copier mon retour</button><button class="btn sec" id="fb-reset">Réinitialiser la maquette</button></div>
+    <p class="hint" id="fb-note"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var GN_PATH="M187.0,375.9 L184.6,373.2 L186.7,371.7 L186.9,370.7 L191.6,364.5 L196.1,362.0 L201.1,361.5 L191.1,360.4 L192.4,358.7 L193.7,353.3 L190.0,360.6 L185.6,361.8 L186.0,359.3 L186.0,356.2 L186.1,354.6 L184.6,351.9 L187.0,348.4 L187.0,344.3 L184.9,345.5 L181.9,346.1 L179.8,352.7 L176.1,350.7 L174.9,346.7 L174.8,341.0 L176.9,336.1 L167.5,337.1 L165.4,330.5 L168.1,326.5 L168.1,323.1 L162.7,330.0 L159.0,325.1 L153.3,325.7 L147.0,328.8 L145.1,328.9 L146.5,327.6 L152.4,320.3 L155.3,313.7 L155.7,306.8 L158.0,304.5 L161.4,301.2 L157.2,302.0 L152.1,295.8 L152.3,299.5 L148.5,306.0 L142.8,300.0 L149.5,288.7 L148.0,286.0 L146.5,289.5 L143.2,293.3 L139.0,295.0 L133.7,293.9 L131.1,290.4 L125.3,286.4 L122.7,282.9 L119.5,282.0 L115.0,279.1 L112.1,275.0 L118.8,272.4 L115.4,268.3 L112.6,269.3 L113.9,266.7 L116.7,260.7 L112.7,264.5 L109.2,267.4 L108.3,274.2 L103.1,274.4 L100.6,269.0 L106.0,263.7 L103.1,264.4 L100.2,267.0 L95.2,268.6 L93.5,265.9 L94.1,263.1 L93.6,261.6 L92.5,262.4 L83.5,257.4 L79.6,256.7 L75.6,256.6 L72.3,255.0 L73.0,248.3 L71.4,246.0 L63.9,235.3 L65.4,229.3 L63.9,229.3 L60.8,231.9 L56.2,232.4 L54.0,232.5 L52.7,228.8 L54.1,223.0 L58.0,220.7 L56.3,218.3 L58.4,209.5 L60.2,208.6 L62.2,206.9 L67.2,197.1 L67.6,192.8 L67.0,191.5 L66.8,194.9 L61.7,198.8 L57.5,207.2 L50.6,215.2 L48.9,212.9 L51.4,210.7 L49.5,210.8 L48.6,206.1 L51.0,202.2 L53.6,199.9 L53.5,198.8 L47.0,203.5 L43.3,210.1 L40.1,205.5 L42.3,202.3 L44.4,198.4 L44.6,194.9 L45.3,192.8 L42.6,195.9 L38.5,197.7 L38.8,194.5 L38.6,191.8 L38.0,190.0 L38.5,186.0 L43.3,184.2 L46.8,181.9 L49.3,179.4 L52.0,175.9 L50.5,174.6 L49.0,176.4 L46.6,177.4 L43.6,181.9 L40.9,181.9 L39.8,180.0 L37.9,179.5 L30.1,177.0 L29.7,180.7 L26.4,182.4 L26.9,184.4 L27.5,189.2 L23.0,192.5 L21.9,192.2 L22.2,194.1 L22.8,198.6 L25.0,200.7 L21.9,202.3 L14.5,198.6 L11.7,192.2 L14.6,188.0 L17.1,186.3 L18.2,184.6 L17.7,183.9 L20.4,180.4 L33.2,158.1 L46.4,132.2 L54.6,128.5 L75.6,123.9 L86.7,116.9 L89.6,113.1 L99.0,114.0 L103.1,114.5 L106.5,116.2 L112.4,115.6 L122.8,113.0 L127.7,113.5 L130.9,109.6 L131.0,105.6 L133.6,108.3 L136.0,109.8 L138.3,111.6 L144.8,109.0 L145.8,101.6 L145.5,81.6 L143.3,77.6 L137.1,75.6 L134.2,71.5 L130.0,69.2 L124.2,65.6 L121.3,63.7 L123.7,58.1 L133.9,52.3 L137.0,54.4 L148.2,50.7 L149.5,45.0 L149.5,40.0 L151.3,32.4 L144.3,21.5 L176.8,13.8 L182.0,15.3 L183.9,16.0 L184.9,15.3 L189.5,14.9 L192.4,15.7 L195.4,15.4 L197.2,16.6 L200.0,16.1 L202.3,15.6 L207.6,16.2 L210.8,19.7 L208.9,26.8 L210.1,32.0 L215.2,32.7 L219.7,32.3 L225.2,26.4 L231.5,30.9 L232.6,33.4 L238.0,34.7 L241.0,36.8 L251.3,37.4 L256.2,42.8 L258.1,43.9 L261.8,42.1 L267.1,41.1 L275.2,44.4 L296.2,45.1 L304.9,39.3 L315.4,41.4 L321.5,38.3 L322.8,38.2 L330.9,41.3 L350.3,38.2 L366.2,37.2 L375.3,41.6 L369.6,42.5 L369.8,51.1 L363.6,60.8 L373.3,69.2 L380.7,77.4 L386.5,80.4 L393.2,79.0 L397.3,75.1 L399.4,71.9 L402.1,68.7 L406.5,65.1 L409.8,59.5 L418.3,58.1 L426.5,66.2 L432.8,70.4 L432.2,75.8 L435.2,80.4 L446.1,90.8 L449.6,87.5 L451.7,83.2 L457.0,80.5 L459.4,76.1 L461.1,72.9 L462.4,71.2 L463.5,67.6 L469.9,65.7 L475.2,62.5 L477.2,61.9 L479.6,61.0 L480.9,60.3 L482.1,59.7 L487.1,59.3 L494.4,62.2 L499.4,62.5 L502.5,64.6 L505.2,65.0 L509.4,67.4 L515.9,70.4 L523.1,73.9 L527.8,74.5 L531.1,76.2 L539.4,77.5 L543.5,71.9 L544.1,66.6 L559.8,59.3 L567.4,54.5 L577.4,53.0 L578.9,49.0 L580.1,44.2 L577.2,42.9 L576.4,40.4 L570.5,35.5 L576.0,31.5 L578.9,30.3 L582.4,31.2 L591.9,32.1 L611.2,41.2 L614.2,47.6 L611.0,53.9 L612.1,59.1 L614.4,61.2 L619.1,63.0 L618.3,71.4 L620.1,77.0 L626.5,77.2 L628.7,82.3 L630.0,86.5 L625.6,114.2 L630.8,115.8 L636.1,115.4 L641.0,123.2 L643.3,128.9 L652.4,133.0 L655.9,134.4 L658.3,138.1 L669.9,141.4 L668.3,144.7 L669.7,147.8 L672.0,150.5 L667.0,152.6 L660.6,152.2 L659.9,155.3 L659.6,156.9 L657.4,157.6 L653.5,160.7 L651.3,166.3 L647.5,167.8 L647.7,170.9 L641.2,178.7 L640.5,183.7 L645.2,183.4 L650.6,183.5 L655.7,181.6 L660.9,174.7 L665.9,175.0 L669.6,175.7 L674.9,175.7 L679.0,182.2 L678.4,195.3 L675.4,203.7 L680.0,226.3 L686.5,237.7 L692.7,238.2 L695.7,237.3 L697.2,242.7 L702.2,245.8 L710.9,249.3 L712.7,256.7 L709.1,264.9 L707.5,269.0 L698.3,274.6 L693.5,281.5 L695.3,284.0 L691.9,286.7 L692.9,288.7 L694.3,289.5 L694.6,292.0 L694.2,293.4 L696.9,295.5 L693.2,324.6 L694.7,330.3 L703.7,341.1 L709.9,341.5 L717.7,338.1 L719.7,347.0 L716.0,361.6 L723.2,363.0 L726.5,366.8 L734.0,372.4 L729.9,374.0 L717.3,378.8 L714.8,382.8 L712.1,398.7 L719.8,403.4 L727.2,404.6 L729.2,406.4 L732.2,409.4 L738.2,416.7 L739.2,423.2 L740.6,431.2 L740.3,438.3 L733.8,442.8 L726.4,432.2 L724.2,435.7 L720.6,437.9 L716.6,435.6 L714.6,431.5 L710.5,430.5 L704.9,431.3 L702.4,430.0 L696.2,431.1 L689.3,430.8 L684.0,436.6 L685.7,440.0 L684.7,449.6 L683.0,454.3 L700.6,463.8 L708.7,461.6 L707.5,465.2 L707.5,471.2 L712.2,476.3 L711.0,478.3 L707.9,476.4 L702.4,477.9 L696.4,491.7 L699.1,498.7 L698.8,501.4 L697.3,503.9 L693.4,512.4 L693.5,514.2 L691.5,515.6 L689.1,520.0 L686.5,525.6 L675.9,520.2 L668.2,518.7 L658.3,522.3 L652.7,514.9 L640.7,512.6 L637.2,521.3 L636.3,523.4 L637.2,524.4 L637.2,529.1 L631.8,534.4 L630.7,537.9 L627.9,540.0 L624.3,544.2 L624.8,548.8 L623.5,553.3 L616.1,552.1 L613.2,553.2 L612.0,555.0 L607.3,556.0 L603.4,558.9 L600.1,559.7 L599.2,557.5 L596.1,554.6 L593.3,552.5 L588.9,543.9 L582.6,542.6 L579.8,539.7 L577.6,538.0 L573.6,538.1 L572.5,539.8 L569.3,541.2 L563.5,542.3 L562.3,542.4 L564.2,539.3 L565.6,535.7 L570.7,528.6 L572.8,524.0 L574.7,518.6 L573.5,511.9 L573.1,502.6 L567.4,493.4 L567.9,480.7 L569.0,478.4 L567.2,474.9 L563.9,477.1 L565.3,473.1 L563.2,463.5 L558.4,461.5 L559.8,454.3 L560.3,453.0 L558.9,450.5 L558.5,447.4 L560.2,446.4 L560.2,444.6 L552.3,439.5 L550.3,440.4 L547.9,440.7 L543.9,440.8 L546.2,436.9 L545.2,432.2 L540.1,432.7 L539.5,436.4 L536.6,431.4 L534.4,423.7 L532.3,425.5 L530.9,428.0 L528.7,430.1 L525.5,430.6 L523.2,430.3 L519.2,430.7 L512.1,435.1 L504.7,437.3 L504.6,429.9 L495.9,427.5 L489.2,432.3 L485.4,431.6 L482.3,431.4 L478.2,430.1 L472.5,431.9 L468.0,439.2 L457.5,448.8 L451.8,447.5 L444.3,447.6 L439.7,451.3 L444.8,442.5 L448.7,431.3 L449.2,428.0 L453.0,422.4 L458.4,418.3 L463.9,414.9 L459.9,406.1 L454.1,399.3 L453.0,398.1 L452.2,393.8 L452.3,382.0 L453.7,375.2 L450.1,373.0 L438.6,371.6 L440.7,360.5 L443.8,358.7 L444.4,354.9 L445.4,351.7 L441.4,345.7 L437.9,343.2 L434.8,341.3 L431.4,341.2 L432.2,339.2 L429.0,336.0 L428.0,330.2 L426.4,327.7 L424.8,323.2 L420.6,319.4 L418.9,315.5 L416.1,313.6 L409.2,301.3 L397.1,291.6 L394.0,281.8 L386.8,280.4 L323.5,286.9 L301.2,292.5 L296.1,291.4 L290.2,287.2 L268.6,291.9 L264.4,295.5 L263.2,304.6 L263.7,306.6 L262.4,306.7 L262.1,308.8 L257.8,311.7 L255.8,319.1 L253.6,319.9 L251.4,324.3 L250.6,325.2 L249.2,326.2 L246.0,338.0 L244.6,339.6 L243.5,340.7 L240.9,341.2 L239.5,343.6 L238.5,345.6 L232.8,351.8 L226.9,352.1 L220.8,352.8 L219.2,359.7 L220.3,362.3 L217.3,364.1 L213.8,370.4 L205.2,375.6 L197.8,372.7 L189.3,374.1Z";
+var C=Math.cos(10*Math.PI/180);
+function P(lon,lat){return [(lon+15.2)*C*100,(12.8-lat)*100];}
+var STATES={ok:{label:"Bon état",short:"Bon"},slight:{label:"Légèrement dégradée",short:"Léger"},grave:{label:"Gravement dégradée",short:"Grave"},risk:{label:"Zone à haut risque",short:"Risque"},works:{label:"Chantier ou rénovation",short:"Chantier"}};
+var SEV={ok:0.1,slight:0.5,grave:1,risk:0.9,works:0.4};
+var CITIES={Conakry:[-13.578,9.641],Coyah:[-13.385,9.707],Kindia:[-12.865,10.057],Mamou:[-12.093,10.375],"Labé":[-12.283,11.318]};
+var ROUTE=[[-13.578,9.641],[-13.50,9.66],[-13.385,9.707],[-13.20,9.80],[-13.05,9.93],[-12.865,10.057],[-12.65,10.12],[-12.45,10.22],[-12.093,10.375]];
+var CITY_IDX={Conakry:0,Coyah:2,Kindia:5,Mamou:8};
+var pts=ROUTE.map(function(p){return P(p[0],p[1]);});
+var cum=[0];for(var i=1;i<pts.length;i++){cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));}
+var TOTAL=cum[cum.length-1];
+var CITY_T={};Object.keys(CITY_IDX).forEach(function(k){CITY_T[k]=cum[CITY_IDX[k]]/TOTAL;});
+function at(t){var d=t*TOTAL;for(var i=1;i<cum.length;i++){if(d<=cum[i]){var f=(d-cum[i-1])/(cum[i]-cum[i-1]);return [pts[i-1][0]+(pts[i][0]-pts[i-1][0])*f,pts[i-1][1]+(pts[i][1]-pts[i-1][1])*f];}}return pts[pts.length-1];}
+function sub(t0,t1){var out=[at(t0)];for(var i=0;i<cum.length;i++){var t=cum[i]/TOTAL;if(t>t0+1e-9&&t<t1-1e-9)out.push(pts[i]);}out.push(at(t1));return out;}
+var KM_SEG=34;
+var SEGS=[
+{id:"T1",name:"Conakry – Coyah",state:"slight",causes:["Fissures longitudinales","Quelques nids-de-poule isolés"],upd:"il y a 3 h",conf:88,rep:2,risk:0.45,reco:"Circulation normale. Rester vigilant en zone urbaine dense."},
+{id:"T2",name:"Coyah – Kindia (secteur ouest)",state:"risk",causes:["Accidents répétés en saison des pluies","Virages serrés et chaussée glissante"],upd:"il y a 5 h",conf:79,rep:3,risk:0.82,reco:"Réduire la vitesse et éviter la conduite de nuit sous la pluie."},
+{id:"T3",name:"Coyah – Kindia (secteur centre)",state:"ok",causes:["Chaussée en bon état"],upd:"il y a 2 h",conf:91,rep:0,risk:0.2,reco:"Rien à signaler."},
+{id:"T4",name:"Entrée de Kindia",state:"works",causes:["Réhabilitation de la chaussée","Circulation alternée"],upd:"il y a 1 h",conf:84,rep:1,risk:0.55,end:"15 déc. 2026",reco:"Prévoir un retard et suivre la signalisation de déviation."},
+{id:"T5",name:"Kindia – Mamou (secteur ouest)",state:"grave",causes:["Ravinement après de fortes pluies","Nids-de-poule multiples","Affaissement de la chaussée"],upd:"il y a 4 h",conf:76,rep:5,risk:0.9,reco:"Ralentir fortement. Itinéraire alternatif conseillé pour les poids lourds."},
+{id:"T6",name:"Kindia – Mamou (secteur centre)",state:"slight",causes:["Fissures en peau de crocodile","Érosion des accotements"],upd:"il y a 6 h",conf:82,rep:1,risk:0.5,reco:"Circulation possible, surveiller les accotements."},
+{id:"T7",name:"Kindia – Mamou (secteur est)",state:"ok",causes:["Chaussée en bon état"],upd:"il y a 2 h",conf:90,rep:0,risk:0.2,reco:"Rien à signaler."},
+{id:"T8",name:"Approche de Mamou",state:"ok",causes:["Chaussée en bon état"],upd:"il y a 3 h",conf:87,rep:0,risk:0.25,reco:"Rien à signaler."}];
+SEGS.forEach(function(s,i){s.t0=i/8;s.t1=(i+1)/8;s.pk0=i*KM_SEG;s.pk1=(i+1)*KM_SEG;s.score=Math.round(100*(0.6*s.risk+0.4*SEV[s.state]));});
+var RAIN=[3,0,14,38,52,22,6];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function $(id){return document.getElementById(id);}
+function store(k,v){try{if(v===undefined){var r=localStorage.getItem(k);return r?JSON.parse(r):null;}localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display="none";},2800);}
+
+/* ---------- reports ---------- */
+var SEED=[{seg:"T5",type:"Ravinement ou érosion",grav:"Dangereuse",desc:"Ravine profonde sur la voie de droite",when:"il y a 1 jour"},{seg:"T2",type:"Accident ou obstacle",grav:"Importante",desc:"Camion en panne sur l’accotement",when:"il y a 2 jours"}];
+var reports=store("ria_reports")||[];
+function repCount(id){var n=0;reports.forEach(function(r){if(r.seg===id)n++;});return n;}
+function segById(id){for(var i=0;i<SEGS.length;i++)if(SEGS[i].id===id)return SEGS[i];}
+function totalRep(s){return s.rep+repCount(s.id);}
+
+/* ---------- map ---------- */
+var sel=null,filters={ok:true,slight:true,grave:true,risk:true,works:true},zoom="axe";
+var svg=$("map");
+function vbFor(z){if(z==="gn")return [0,0,758,580];var xs=pts.map(function(p){return p[0];}),ys=pts.map(function(p){return p[1];});var x0=Math.min.apply(null,xs)-70,x1=Math.max.apply(null,xs)+62,y0=Math.min.apply(null,ys)-52,y1=Math.max.apply(null,ys)+48;return [x0,y0,x1-x0,y1-y0];}
+function poly(arr){return arr.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1);}).join(" ");}
+function drawMap(){
+  var vb=vbFor(zoom);svg.setAttribute("viewBox",vb.join(" "));
+  var px=svg.clientWidth||vb[2];var k=vb[2]/px;
+  var h='<rect x="'+(vb[0]-5)+'" y="'+(vb[1]-5)+'" width="'+(vb[2]+10)+'" height="'+(vb[3]+10)+'" fill="var(--sea)"/>';
+  h+='<path d="'+GN_PATH+'" fill="var(--land)" stroke="var(--brand)" stroke-width="1.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+  var fs=13*k;
+  Object.keys(CITIES).forEach(function(n){var p=P(CITIES[n][0],CITIES[n][1]);var show=(zoom==="gn")||(n!=="Labé");
+    if(!show)return;var main=CITY_IDX[n]!==undefined;
+    h+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+((main?5:4)*k).toFixed(2)+'" fill="'+(main?"var(--title)":"var(--muted)")+'" stroke="var(--card)" stroke-width="'+(1.5*k).toFixed(2)+'"/>';
+    var dx=(n==="Conakry")?-8*k:8*k;var anc=(n==="Conakry")?"end":"start";var dy=(n==="Coyah")?16*k:(n==="Kindia"?-8*k:(n==="Mamou"?-8*k:4*k));
+    h+='<text x="'+(p[0]+dx).toFixed(1)+'" y="'+(p[1]+dy).toFixed(1)+'" font-size="'+fs.toFixed(1)+'" text-anchor="'+anc+'" fill="var(--title)" font-weight="'+(main?700:500)+'" paint-order="stroke" stroke="var(--land)" stroke-width="'+(3*k).toFixed(2)+'">'+n+(n==="Labé"?" · IndabaX 2026":"")+'</text>';});
+  SEGS.forEach(function(s){
+    var on=filters[s.state];var pl=poly(sub(s.t0,s.t1));var op=on?1:0.14;
+    var dash=s.state==="works"?' stroke-dasharray="14 9"':"";
+    if(sel===s.id)h+='<polyline points="'+pl+'" fill="none" stroke="var(--card)" stroke-width="18" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
+    h+='<polyline points="'+pl+'" fill="none" stroke="var(--'+s.state+')" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"'+dash+' opacity="'+op+'"/>';
+    h+='<polyline data-seg="'+s.id+'" points="'+pl+'" fill="none" stroke="transparent" stroke-width="30" stroke-linecap="round" vector-effect="non-scaling-stroke" style="cursor:pointer;pointer-events:'+(on?"stroke":"none")+'"/>';
+  });
+  SEGS.forEach(function(s){if(!filters[s.state])return;if(zoom==='gn'&&sel!==s.id)return;var m=at((s.t0+s.t1)/2);var r=11*k;
+    h+='<g data-seg="'+s.id+'" style="cursor:pointer"><circle cx="'+m[0].toFixed(1)+'" cy="'+(m[1]-17*k).toFixed(1)+'" r="'+r.toFixed(2)+'" fill="var(--card)" stroke="var(--'+s.state+')" stroke-width="'+(2.5*k).toFixed(2)+'"/><text x="'+m[0].toFixed(1)+'" y="'+(m[1]-17*k+4.5*k).toFixed(1)+'" font-size="'+(12*k).toFixed(1)+'" text-anchor="middle" font-weight="800" fill="var(--ink)">'+s.id.slice(1)+'</text></g>';
+    if(s.state==="risk")h+='<text x="'+(m[0]+16*k).toFixed(1)+'" y="'+(m[1]-20*k).toFixed(1)+'" font-size="'+(16*k).toFixed(1)+'" aria-hidden="true">⚠️</text>';
+    if(s.state==="works")h+='<text x="'+(m[0]+16*k).toFixed(1)+'" y="'+(m[1]-20*k).toFixed(1)+'" font-size="'+(16*k).toFixed(1)+'" aria-hidden="true">🚧</text>';});
+  svg.innerHTML=h;
+}
+svg.addEventListener("click",function(e){var t=e.target.closest("[data-seg]");if(t)select(t.getAttribute("data-seg"));});
+function pill(st){return '<span class="pill '+st+'"><span class="dot"></span>'+STATES[st].label+'</span>';}
+function renderDetail(){
+  var d=$("detail");
+  if(!sel){d.innerHTML='<h3>Détail du tronçon</h3><p class="muted">Touchez un tronçon sur la carte ou dans la liste pour voir son état, ses causes et la recommandation.</p><div class="reco">Astuce : le tronçon <b>T5</b> est un bon exemple à ouvrir.</div>';return;}
+  var s=segById(sel);var n=totalRep(s);
+  var h='<h3>'+s.id+' · '+esc(s.name)+'</h3><p style="margin:4px 0 8px">'+pill(s.state)+'</p>';
+  h+='<ul class="plain">'+s.causes.map(function(c){return '<li>'+esc(c)+'</li>';}).join("")+'</ul>';
+  h+='<dl class="kv"><dt>Position</dt><dd>PK '+s.pk0+' à '+s.pk1+' (≈ '+KM_SEG+' km)</dd><dt>Mise à jour</dt><dd>'+s.upd+'</dd><dt>Confiance</dt><dd>'+s.conf+' %</dd><dt>Signalements</dt><dd>'+n+' citoyen(s)</dd>'+(s.end?'<dt>Fin des travaux</dt><dd>'+s.end+'</dd>':'')+'</dl>';
+  h+='<div class="reco"><b>Recommandation :</b> '+esc(s.reco)+'</div>';
+  h+='<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sec" data-ask="'+s.id+'">Demander à l’agent</button><button class="btn sec" data-rep="'+s.id+'">Signaler ici</button></div>';
+  d.innerHTML=h;
+}
+$("detail").addEventListener("click",function(e){var a=e.target.closest("[data-ask]");if(a){go("agent");ask("Quel est l’état du tronçon "+a.getAttribute("data-ask")+" ?");return;}var r=e.target.closest("[data-rep]");if(r){go("signaler");$("r-seg").value=r.getAttribute("data-rep");}});
+function renderList(){
+  $("seglist").innerHTML=SEGS.map(function(s){return '<button class="segrow" data-seg="'+s.id+'" aria-pressed="'+(sel===s.id)+'"'+(filters[s.state]?"":' style="opacity:.4"')+'><span class="t">'+s.id+'</span><span class="dot '+s.state+'"></span><span class="n">'+esc(s.name)+'<small>'+STATES[s.state].label+' · PK '+s.pk0+'–'+s.pk1+'</small></span></button>';}).join("");
+}
+$("seglist").addEventListener("click",function(e){var t=e.target.closest("[data-seg]");if(t)select(t.getAttribute("data-seg"));});
+function renderFilters(){
+  $("filters").innerHTML=Object.keys(STATES).map(function(k){return '<button class="chip" data-f="'+k+'" aria-pressed="'+filters[k]+'"><span class="dot '+k+'"></span>'+STATES[k].label+'</button>';}).join("");
+}
+$("filters").addEventListener("click",function(e){var b=e.target.closest("[data-f]");if(!b)return;var k=b.getAttribute("data-f");filters[k]=!filters[k];renderFilters();renderList();drawMap();});
+function select(id){sel=id;renderDetail();renderList();drawMap();if(window.innerWidth<900){var d=$("detail");setTimeout(function(){d.scrollIntoView({behavior:"smooth",block:"nearest"});},50);}}
+function setZoom(z){zoom=z;$("z-axe").setAttribute("aria-pressed",z==="axe");$("z-gn").setAttribute("aria-pressed",z==="gn");drawMap();}
+$("z-axe").onclick=function(){setZoom("axe");};$("z-gn").onclick=function(){setZoom("gn");};
+if(window.ResizeObserver){new ResizeObserver(function(){drawMap();}).observe(svg);}
+
+/* ---------- agent ---------- */
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+function segsBetween(a,b){var t0=Math.min(CITY_T[a],CITY_T[b]),t1=Math.max(CITY_T[a],CITY_T[b]);return SEGS.filter(function(s){var m=(s.t0+s.t1)/2;return m>=t0&&m<=t1;});}
+function list(arr){return '<ul>'+arr.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul>';}
+function foot(arr){var c=Math.round(arr.reduce(function(a,s){return a+s.conf;},0)/arr.length);var u=arr[0].upd;return '<span class="src">Source : base de données (fictive) · mise à jour '+u+' · confiance moyenne '+c+' %</span>';}
+function summary(arr,label){
+  var cnt={};arr.forEach(function(s){cnt[s.state]=(cnt[s.state]||[]).concat(s.id);});
+  var parts=Object.keys(STATES).filter(function(k){return cnt[k];}).map(function(k){return '<b>'+cnt[k].length+'</b> '+STATES[k].label.toLowerCase()+' ('+cnt[k].join(", ")+')';});
+  var worst=arr.filter(function(s){return s.state==="grave"||s.state==="risk";});
+  var h='Sur '+label+' ('+arr.length*KM_SEG+' km environ, '+arr[0].id+' à '+arr[arr.length-1].id+') :'+list(parts);
+  if(worst.length)h+='Points d’attention : '+worst.map(function(s){return s.id+' ('+s.reco.toLowerCase().replace(/\.$/,"").replace(/\.\s/g,' ; ')+')';}).join(" ; ")+'.';
+  else h+='Aucun point d’attention majeur.';
+  return h+foot(arr)+'';
+}
+function dayLabel(i){var d=new Date(Date.now()+i*864e5);return d.toLocaleDateString("fr-FR",{weekday:"long"});}
+function answer(q){
+  var n=norm(q);var found=Object.keys(CITY_T).filter(function(c){return n.indexOf(norm(c))>=0;});
+  var idm=n.match(/\bt([1-8])\b/);
+  if(/^(bonjour|salut|bonsoir|hello|coucou)/.test(n))return {h:"Bonjour ! Je peux vous renseigner sur l’état des tronçons de la RN1, les chantiers, les zones à haut risque et la pluie annoncée. Essayez un des exemples ci-dessous.",f:["État de la RN1 entre Kindia et Mamou","Où sont les chantiers ?"]};
+  if(idm){var s=segById("T"+idm[1]);return {h:'<b>'+s.id+' · '+esc(s.name)+'</b> : '+pill(s.state)+list(s.causes.map(esc))+'<b>Recommandation :</b> '+esc(s.reco)+(s.end?' Fin des travaux prévue le '+s.end+'.':'')+foot([s]),f:["Zones à haut risque","Pluie annoncée cette semaine"]};}
+  if(/chantier|travaux|renovation|deviation|rehabilitation/.test(n)){var w=SEGS.filter(function(s){return s.state==="works";});return {h:w.length?'Chantiers en cours : '+list(w.map(function(s){return '<b>'+s.id+'</b> '+esc(s.name)+' : '+esc(s.causes.join(", "))+', fin prévue le '+s.end;}))+foot(w):"Aucun chantier en cours dans la base.",f:["Puis-je partir demain de Conakry à Mamou ?"]};}
+  if(/risque|accident|dangereu|danger|point noir/.test(n)){var r=SEGS.filter(function(s){return s.state==="risk";});return {h:'Zones à haut risque : '+list(r.map(function(s){return '<b>'+s.id+'</b> '+esc(s.name)+' : '+esc(s.causes.join(" ; "))+' (score '+s.score+'/100)';}))+foot(r),f:["Pluie annoncée cette semaine","Où sont les routes gravement dégradées ?"]};}
+  if(/grave|degrad|nid|poule|trou|ravin|mauvais|pire/.test(n)&&found.length<2){var g=SEGS.filter(function(s){return s.state==="grave";});return {h:'Routes gravement dégradées : '+list(g.map(function(s){return '<b>'+s.id+'</b> '+esc(s.name)+' : '+esc(s.causes.join(", "));}))+foot(g),f:["État du tronçon T5","Zones à haut risque"]};}
+  if(/pluie|meteo|climat|secheresse|orage|temps/.test(n)){var mx=0,mi=0;RAIN.forEach(function(v,i){if(v>mx){mx=v;mi=i;}});var sens=SEGS.filter(function(s){return s.state==="grave"||s.state==="risk";}).map(function(s){return s.id;}).join(", ");return {h:'Pluie annoncée (prévision fictive) : pic d’environ <b>'+mx+' mm</b> '+(mi===0?"aujourd’hui":'dans '+mi+' jour(s), '+dayLabel(mi))+'. Tronçons sensibles à surveiller : '+sens+'. Les zones de ravinement et de chaussée glissante sont les plus exposées.<span class="src">Source : prévision fictive · confiance 70 % (incertitude élevée à plus de 3 jours)</span>',f:["Puis-je partir demain de Conakry à Mamou ?"]};}
+  if(/partir|depart|conseil|itineraire|recommand|puis-je|dois-je|rouler|voyage/.test(n)||(found.length>=2)){
+    var a=found.length>=2?found[0]:"Conakry",b=found.length>=2?found[1]:"Mamou";var arr=segsBetween(a,b);
+    var h=summary(arr,a+" – "+b);
+    var bad=arr.some(function(s){return s.state==="grave";});
+    h+='<br><b>Conseil :</b> '+(bad?'départ possible, mais prévoir un ralentissement important sur '+arr.filter(function(s){return s.state==="grave";}).map(function(s){return s.id;}).join(", ")+' et vérifier la météo avant de partir.':'trajet possible dans de bonnes conditions, restez vigilant.')+' La décision finale vous revient : vérifiez sur place.';
+    return {h:h,f:["Où sont les chantiers ?","Pluie annoncée cette semaine"]};}
+  if(n.indexOf("labe")>=0)return {h:"Labé n’est pas sur l’axe pilote RN1 Conakry – Mamou : je n’ai pas de donnée routière pour cette zone dans la base actuelle. Elle pourrait être ajoutée lors d’une extension du pilote.",f:["État de la RN1 entre Kindia et Mamou","Zones à haut risque"]};
+  if(found.length===1){var c=found[0];var near=SEGS.filter(function(s){var t=CITY_T[c];return t>=s.t0-1e-6&&t<=s.t1+1e-6;});if(c==="Labé")return {h:"Labé n’est pas sur l’axe pilote RN1 Conakry – Mamou : je n’ai pas de donnée routière pour cette zone dans la base actuelle.",f:["État de la RN1 entre Kindia et Mamou"]};return {h:'Autour de '+c+' :'+list(near.map(function(s){return '<b>'+s.id+'</b> '+esc(s.name)+' : '+STATES[s.state].label.toLowerCase();}))+foot(near),f:["État de la RN1 entre Kindia et Mamou"]};}
+  if(/confiance|fiable|source|comment|hallucin|donnee/.test(n))return {h:"Je réponds uniquement à partir de la base de données du projet (ici fictive). Chaque réponse indique la date de mise à jour et un niveau de confiance. Si je n’ai pas l’information, je le dis.",f:["État de la RN1 entre Kindia et Mamou"]};
+  return {h:"Je n’ai pas d’information sur ce sujet dans la base. Je peux répondre sur l’état des tronçons de la RN1, les chantiers, les zones à haut risque et la pluie annoncée.",f:["État de la RN1 entre Kindia et Mamou","Zones à haut risque"],miss:true};
+}
+var msgs=$("msgs");
+function addMsg(cls,html){var d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+function renderQuick(list2){$("quick").innerHTML=list2.map(function(q){return '<button class="chip" data-q="'+esc(q)+'">'+esc(q)+'</button>';}).join("");}
+var QUICK=["État de la RN1 entre Kindia et Mamou","Où sont les chantiers ?","Zones à haut risque","Pluie annoncée cette semaine","Puis-je partir demain de Conakry à Mamou ?"];
+function ask(q){q=q.trim();if(!q)return;addMsg("u",esc(q));var t=addMsg("a",'<span class="typing" aria-label="L’agent écrit"><i></i><i></i><i></i></span>');
+  setTimeout(function(){var r=answer(q);t.innerHTML=r.h;msgs.scrollTop=msgs.scrollHeight;renderQuick(r.f&&r.f.length?r.f:QUICK);},650);}
+$("quick").addEventListener("click",function(e){var b=e.target.closest("[data-q]");if(b)ask(b.getAttribute("data-q"));});
+$("askform").addEventListener("submit",function(e){e.preventDefault();var i=$("ask");ask(i.value);i.value="";});
+addMsg("a","Bonjour, je suis l’agent IA de Route IA Guinée (maquette). Posez-moi une question sur la RN1, ou choisissez un exemple ci-dessous.<span class=\"src\">Les données de cette maquette sont fictives.</span>");
+renderQuick(QUICK);
+
+/* ---------- reports ---------- */
+$("r-seg").innerHTML=SEGS.map(function(s){return '<option value="'+s.id+'">'+s.id+' · '+esc(s.name)+'</option>';}).join("");
+$("r-photo").addEventListener("change",function(e){var f=e.target.files&&e.target.files[0];var im=$("thumb");if(!f){im.style.display="none";return;}var rd=new FileReader();rd.onload=function(){im.src=rd.result;im.style.display="block";};rd.readAsDataURL(f);});
+$("r-gps").onclick=function(){var o=$("r-gpsout");if(!navigator.geolocation){o.textContent="Position non disponible sur cet appareil.";return;}o.textContent="Recherche de la position…";try{navigator.geolocation.getCurrentPosition(function(p){o.textContent="Position : "+p.coords.latitude.toFixed(4)+", "+p.coords.longitude.toFixed(4)+" (précision ≈ "+Math.round(p.coords.accuracy)+" m). Elle reste sur votre appareil dans cette maquette.";},function(){o.textContent="Position refusée ou indisponible. Vous pouvez choisir le tronçon manuellement.";},{timeout:8000});}catch(e){o.textContent="Position indisponible.";}};
+$("r-send").onclick=function(){var g=document.querySelector('input[name="grav"]:checked');var r={seg:$("r-seg").value,type:$("r-type").value,grav:g?g.value:"Légère",desc:$("r-desc").value.trim().slice(0,300),when:"à l’instant"};reports.unshift(r);store("ria_reports",reports);$("r-desc").value="";$("r-photo").value="";$("thumb").style.display="none";renderReports();renderDetail();renderList();renderDash();toast("Merci ! Signalement enregistré (simulation) sur "+r.seg+".");};
+function renderReports(){var all=reports.concat(SEED);$("replist").innerHTML=all.slice(0,8).map(function(r){return '<div class="rep"><b>'+esc(r.seg)+'</b> · '+esc(r.type)+' <span class="pill '+(r.grav==="Dangereuse"?"grave":(r.grav==="Importante"?"slight":"ok"))+'" style="font-size:12.5px;padding:1px 8px">'+esc(r.grav)+'</span><br><span class="muted">'+esc(r.desc||"Sans description")+' · '+esc(r.when)+'</span></div>';}).join("");}
+
+/* ---------- dashboard ---------- */
+function renderDash(){
+  var km={};Object.keys(STATES).forEach(function(k){km[k]=0;});SEGS.forEach(function(s){km[s.state]+=KM_SEG;});
+  var tot=KM_SEG*SEGS.length;var nrep=SEGS.reduce(function(a,s){return a+totalRep(s);},0);
+  $("kpis").innerHTML='<div class="kpi"><b>'+tot+' km</b><span>suivis sur la RN1</span></div><div class="kpi"><b>'+Math.round(100*km.ok/tot)+' %</b><span>en bon état</span></div><div class="kpi"><b>'+(km.risk/KM_SEG+km.grave/KM_SEG)+'</b><span>tronçons critiques (risque ou grave)</span></div><div class="kpi"><b>'+nrep+'</b><span>signalements citoyens</span></div>';
+  $("bars").innerHTML=Object.keys(STATES).map(function(k){return '<div class="bar"><span><span class="dot '+k+'"></span> '+STATES[k].short+'</span><div class="tr"><div class="fl" style="width:'+Math.round(100*km[k]/tot)+'%;background:var(--'+k+')"></div></div><span>'+km[k]+' km</span></div>';}).join("");
+  var mx=Math.max.apply(null,RAIN);$("rain").innerHTML=RAIN.map(function(v,i){return '<div><span>'+v+'</span><i style="height:'+Math.max(4,Math.round(90*v/mx))+'px;'+(v>=40?"background:var(--grave)":(v>=20?"background:var(--slight)":""))+'"></i><span class="muted">'+dayLabel(i).slice(0,3)+'</span></div>';}).join("");
+  $("rainnote").textContent="Prévision fictive en mm. Barre rouge : forte pluie (40 mm ou plus), jaune : modérée.";
+  var top=SEGS.slice().sort(function(a,b){return b.score-a.score;}).slice(0,3);
+  $("prio").innerHTML=top.map(function(s){var c=s.score>=80?"var(--grave)":(s.score>=50?"var(--accent)":"var(--brand)");return '<div class="prio"><div class="score" style="background:'+c+'">'+s.score+'</div><div><b>'+s.id+' · '+esc(s.name)+'</b><br>'+pill(s.state)+'<br><span class="small muted">'+esc(s.causes[0])+' · '+totalRep(s)+' signalement(s)</span></div></div>';}).join("");
+}
+
+/* ---------- navigation ---------- */
+var TABS=["carte","agent","signaler","tableau"];
+function go(t){if(TABS.indexOf(t)<0)t="carte";TABS.forEach(function(k){$("v-"+k).classList.toggle("on",k===t);});
+  document.querySelectorAll("nav.tabs button").forEach(function(b){if(b.getAttribute("data-tab")===t)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
+  if(location.hash!=="#"+t){try{history.replaceState(null,"","#"+t);}catch(e){location.hash=t;}}
+  if(t==="carte")setTimeout(drawMap,0);window.scrollTo(0,0);}
+document.querySelector("nav.tabs").addEventListener("click",function(e){var b=e.target.closest("[data-tab]");if(b)go(b.getAttribute("data-tab"));});
+window.addEventListener("hashchange",function(){go(location.hash.slice(1));});
+
+/* ---------- test guide ---------- */
+var rating=0,fb=store("ria_fb")||{rating:0,text:""};rating=fb.rating||0;
+function renderStars(){$("stars").innerHTML=[1,2,3,4,5].map(function(i){return '<button type="button" class="'+(i<=rating?"on":"")+'" data-s="'+i+'" role="radio" aria-checked="'+(i===rating)+'" aria-label="'+i+' sur 5">★</button>';}).join("");}
+$("stars").addEventListener("click",function(e){var b=e.target.closest("[data-s]");if(!b)return;rating=+b.getAttribute("data-s");renderStars();store("ria_fb",{rating:rating,text:$("fb-text").value});});
+$("fb-text").value=fb.text||"";$("fb-text").addEventListener("input",function(){store("ria_fb",{rating:rating,text:$("fb-text").value});});
+function openM(){$("modal").classList.add("on");}function closeM(){$("modal").classList.remove("on");}
+$("open-test").onclick=openM;$("close-test").onclick=closeM;$("modal").addEventListener("click",function(e){if(e.target===$("modal"))closeM();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeM();});
+$("fb-copy").onclick=function(){var t="Retour maquette Route IA Guinée\nNote : "+(rating||"non renseignée")+"/5\nCommentaire : "+($("fb-text").value||"aucun")+"\nSignalements faits : "+reports.length;var n=$("fb-note");try{navigator.clipboard.writeText(t).then(function(){n.textContent="Retour copié. Vous pouvez le coller dans un message.";},function(){n.textContent=t;});}catch(e){n.textContent=t;}};
+$("fb-reset").onclick=function(){reports=[];store("ria_reports",[]);store("ria_fb",{rating:0,text:""});rating=0;$("fb-text").value="";renderStars();renderReports();renderDash();renderDetail();renderList();toast("Maquette réinitialisée.");};
+
+/* online/offline */
+function net(){$("net").className=navigator.onLine===false?"off":"";}
+window.addEventListener("online",net);window.addEventListener("offline",net);net();
+try{var mq=window.matchMedia("(prefers-color-scheme: dark)");mq.addEventListener&&mq.addEventListener("change",drawMap);}catch(e){}
+
+renderFilters();renderList();renderDetail();renderReports();renderDash();renderStars();
+go(TABS.indexOf(location.hash.slice(1))>=0?location.hash.slice(1):"carte");
+setTimeout(drawMap,30);
+})();
+</script>
+</body></html>
